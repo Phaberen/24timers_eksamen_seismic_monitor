@@ -16,9 +16,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Delopgave 2: alert creation rules, exercised through the real ingest flow
-// (validity gate -> AlertService -> estimators -> persistence) on H2.
-// @Transactional rolls each test back so they stay isolated.
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -28,8 +25,6 @@ class AlertCreationTest {
     @Autowired SensorReadingRepository readingRepository;
     @Autowired EarthquakeAlertRepository alertRepository;
 
-    // A valid reading at a caller-chosen location (distinct locations keep the
-    // trilateration geometry non-degenerate).
     private SensorDataRequest reading(String readingId, String sensorId,
                                       double lat, double lon, double magnitude) {
         return new SensorDataRequest(
