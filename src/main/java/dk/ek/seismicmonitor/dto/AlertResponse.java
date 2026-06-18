@@ -13,6 +13,7 @@ public record AlertResponse(
         double epicenterLatitude,
         double epicenterLongitude,
         double magnitude,
+        String area,
         LocalDateTime createdAt
 ) {
     // Maps an entity to its response shape in one place, so every endpoint that
@@ -24,6 +25,7 @@ public record AlertResponse(
                 alert.getEpicenterLatitude(),
                 alert.getEpicenterLongitude(),
                 alert.getMagnitude(),
+                alert.getArea(),
                 alert.getCreatedAt());
     }
 }

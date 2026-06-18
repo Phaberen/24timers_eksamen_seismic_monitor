@@ -8,6 +8,7 @@ import dk.ek.seismicmonitor.estimation.LocationWithDistance;
 import dk.ek.seismicmonitor.estimation.MagnitudeEstimator;
 import dk.ek.seismicmonitor.estimation.MagnitudeSample;
 import dk.ek.seismicmonitor.exception.AlertNotFoundException;
+import dk.ek.seismicmonitor.geocoding.ReverseGeocoder;
 import dk.ek.seismicmonitor.model.AlertStatus;
 import dk.ek.seismicmonitor.model.EarthquakeAlert;
 import dk.ek.seismicmonitor.model.SensorReading;
@@ -26,15 +27,18 @@ public class AlertService {
 
     private final EpicenterEstimator epicenterEstimator;
     private final MagnitudeEstimator magnitudeEstimator;
+    private final ReverseGeocoder reverseGeocoder;
     private final EarthquakeAlertRepository alertRepository;
     private final SensorReadingRepository readingRepository;
 
     public AlertService(EpicenterEstimator epicenterEstimator,
                         MagnitudeEstimator magnitudeEstimator,
+                        ReverseGeocoder reverseGeocoder,
                         EarthquakeAlertRepository alertRepository,
                         SensorReadingRepository readingRepository) {
         this.epicenterEstimator = epicenterEstimator;
         this.magnitudeEstimator = magnitudeEstimator;
+        this.reverseGeocoder = reverseGeocoder;
         this.alertRepository = alertRepository;
         this.readingRepository = readingRepository;
     }
@@ -53,9 +57,11 @@ public class AlertService {
         }
 
         double magnitude = magnitudeEstimator.estimate(toMagnitudeSamples(validReadings));
+        String area = reverseGeocoder.lookupArea(epicenter.latitude(), epicenter.longitude())
+                .orElse(null);
 
         EarthquakeAlert alert = alertRepository.save(
-                new EarthquakeAlert(epicenter.latitude(), epicenter.longitude(), magnitude));
+                new EarthquakeAlert(epicenter.latitude(), epicenter.longitude(), magnitude, area));
 
         validReadings.forEach(reading -> reading.assignToAlert(alert));
         readingRepository.saveAll(validReadings);

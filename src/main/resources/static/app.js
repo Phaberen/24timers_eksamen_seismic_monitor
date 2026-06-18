@@ -65,7 +65,8 @@ async function renderAlert(alert) {
             <span class="badge ${alert.status}">${alert.status}</span>
         </div>
         <p class="alert-meta">
-            Epicenter: ${alert.epicenterLatitude.toFixed(4)}, ${alert.epicenterLongitude.toFixed(4)}
+            Area: ${alert.area || "Unknown"}
+            &nbsp;|&nbsp; Epicenter: ${alert.epicenterLatitude.toFixed(4)}, ${alert.epicenterLongitude.toFixed(4)}
             &nbsp;|&nbsp; Magnitude: ${alert.magnitude.toFixed(2)}
             &nbsp;|&nbsp; Reports: ${count}
         </p>`;

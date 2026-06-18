@@ -21,16 +21,21 @@ public class EarthquakeAlert {
     private double epicenterLongitude;
     private double magnitude;
 
+    // Reverse-geocoded area for the epicenter (city/region/country); null if unknown.
+    private String area;
+
     private LocalDateTime createdAt;
 
     protected EarthquakeAlert() { } // required by JPA
 
     // New alerts always start UNDER_REVIEW.
-    public EarthquakeAlert(double epicenterLatitude, double epicenterLongitude, double magnitude) {
+    public EarthquakeAlert(double epicenterLatitude, double epicenterLongitude,
+                           double magnitude, String area) {
         this.status = AlertStatus.UNDER_REVIEW;
         this.epicenterLatitude = epicenterLatitude;
         this.epicenterLongitude = epicenterLongitude;
         this.magnitude = magnitude;
+        this.area = area;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -48,5 +53,6 @@ public class EarthquakeAlert {
     public double getEpicenterLatitude() { return epicenterLatitude; }
     public double getEpicenterLongitude() { return epicenterLongitude; }
     public double getMagnitude() { return magnitude; }
+    public String getArea() { return area; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 }
