@@ -1,0 +1,75 @@
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    color: #1c1c1c;
+    background: #f4f5f7;
+}
+
+header {
+    background: #1f2d3d;
+    color: #fff;
+    padding: 1.5rem 2rem;
+}
+
+header h1 { margin: 0; }
+header p { margin: 0.25rem 0 0; color: #b9c4d0; }
+
+main { max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; }
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+button {
+    cursor: pointer;
+    border: 1px solid #c3c9d0;
+    background: #fff;
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+}
+
+button:hover { background: #eef1f4; }
+
+.tab.active { background: #1f2d3d; color: #fff; border-color: #1f2d3d; }
+
+.status-message { min-height: 1.2rem; color: #b00020; }
+
+.alert-card {
+    background: #fff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.alert-head { display: flex; justify-content: space-between; align-items: center; }
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+}
+
+.badge.UNDER_REVIEW { background: #fff4d6; color: #8a6d00; }
+.badge.ACTIVE { background: #fde0e0; color: #b00020; }
+.badge.FALSE_ALARM { background: #e6e8eb; color: #555; }
+.badge.NOT_ACTIVE { background: #dcefe0; color: #1a7f37; }
+
+.alert-meta { color: #555; font-size: 0.9rem; margin: 0.5rem 0; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.5rem; }
+
+.actions input[type="number"] { width: 4rem; padding: 0.3rem; border: 1px solid #c3c9d0; border-radius: 6px; }
+
+.panel {
+    margin-top: 0.75rem;
+    border-top: 1px solid #eee;
+    padding-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.panel ul { margin: 0.25rem 0; padding-left: 1.2rem; }
+
+.empty { color: #777; }
