@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: seismic-mysql
+    environment:
+      MYSQL_DATABASE: seismicmonitor
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: seismic
+      MYSQL_PASSWORD: seismic
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Sensor simulator: POSTs 1-3 measurements every 15s to the app on the host.
+  # The app must be running on the host at :8080 for these to be received.
+  sensors:
+    image: ghcr.io/osman-butt/exam-seismic-simulator:latest
+    container_name: seismic-sensors
+    environment:
+      STUDENT_APP_BASE_URL: "http://host.docker.internal:8080"
+      # SIMULATOR_INTERVAL_MS: 15000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  mysql-data:
