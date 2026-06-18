@@ -1,6 +1,7 @@
 package dk.ek.seismicmonitor.service;
 
 import dk.ek.seismicmonitor.dto.AlertResponse;
+import dk.ek.seismicmonitor.dto.SensorReadingResponse;
 import dk.ek.seismicmonitor.estimation.EpicenterEstimator;
 import dk.ek.seismicmonitor.estimation.Location;
 import dk.ek.seismicmonitor.estimation.LocationWithDistance;
@@ -83,6 +84,17 @@ public class AlertService {
         return alertRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(AlertResponse::from)
+                .toList();
+    }
+
+    // The sensor readings that produced a given alert.
+    @Transactional(readOnly = true)
+    public List<SensorReadingResponse> getReadingsForAlert(Long alertId) {
+        EarthquakeAlert alert = alertRepository.findById(alertId)
+                .orElseThrow(() -> new AlertNotFoundException(alertId));
+        return readingRepository.findByAlertOrderByRecordedAtDesc(alert)
+                .stream()
+                .map(SensorReadingResponse::from)
                 .toList();
     }
 

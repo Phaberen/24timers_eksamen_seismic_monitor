@@ -1,5 +1,7 @@
 package dk.ek.seismicmonitor.dto;
 
+import dk.ek.seismicmonitor.model.SensorReading;
+
 import java.time.LocalDateTime;
 
 public record SensorReadingResponse(
@@ -11,4 +13,16 @@ public record SensorReadingResponse(
         double estimatedDistanceToEpicenterKm,
         double estimatedMagnitude,
         LocalDateTime recordedAt
-) { }
+) {
+    public static SensorReadingResponse from(SensorReading r) {
+        return new SensorReadingResponse(
+                r.getId(),
+                r.getReadingId(),
+                r.getSensor().getSensorId(),
+                r.getLatitude(),
+                r.getLongitude(),
+                r.getEstimatedDistanceToEpicenterKm(),
+                r.getEstimatedMagnitude(),
+                r.getRecordedAt());
+    }
+}

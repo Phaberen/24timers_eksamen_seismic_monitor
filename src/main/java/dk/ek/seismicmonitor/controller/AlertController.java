@@ -2,6 +2,7 @@ package dk.ek.seismicmonitor.controller;
 
 import dk.ek.seismicmonitor.dto.AlertResponse;
 import dk.ek.seismicmonitor.dto.ChangeAlertStatusRequest;
+import dk.ek.seismicmonitor.dto.SensorReadingResponse;
 import dk.ek.seismicmonitor.service.AlertService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,11 @@ public class AlertController {
     public AlertResponse changeStatus(@PathVariable Long id,
                                       @Valid @RequestBody ChangeAlertStatusRequest request) {
         return AlertResponse.from(alertService.changeStatus(id, request.status()));
+    }
+
+    // The sensor readings that led to an alert. GET /api/alerts/{id}/readings
+    @GetMapping("/{id}/readings")
+    public List<SensorReadingResponse> getReadings(@PathVariable Long id) {
+        return alertService.getReadingsForAlert(id);
     }
 }

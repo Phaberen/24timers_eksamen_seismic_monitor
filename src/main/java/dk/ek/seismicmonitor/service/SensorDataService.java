@@ -67,7 +67,7 @@ public class SensorDataService {
     @Transactional(readOnly = true)
     public List<SensorReadingResponse> getAllReadings() {
         return readingRepository.findAll().stream()
-                .map(this::toResponse)
+                .map(SensorReadingResponse::from)
                 .toList();
     }
 
@@ -77,18 +77,6 @@ public class SensorDataService {
                         new Sensor(m.sensorId(),
                                 latOf(m.sensorLocation()),
                                 lonOf(m.sensorLocation()))));
-    }
-
-    private SensorReadingResponse toResponse(SensorReading r) {
-        return new SensorReadingResponse(
-                r.getId(),
-                r.getReadingId(),
-                r.getSensor().getSensorId(),
-                r.getLatitude(),
-                r.getLongitude(),
-                r.getEstimatedDistanceToEpicenterKm(),
-                r.getEstimatedMagnitude(),
-                r.getRecordedAt());
     }
 
     private static double latOf(SensorLocationDto loc) {
