@@ -7,33 +7,25 @@ import dk.ek.seismicmonitor.repository.SensorReadingRepository;
 import dk.ek.seismicmonitor.repository.SensorRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// @DataJpaTest loads only the JPA layer + repositories (fast, transactional, rolled back per test).
-// @Import pulls the service into the slice; it's not a repository so it isn't picked up
-// automatically.
-// replace = NONE + profile "test" => use the configured H2 from application-test.properties (no
-// MySQL/Docker needed).
-@DataJpaTest
+// Full app context (boots fine) backed by H2 from the "test" profile.
+// @Transactional rolls each test back so tests stay isolated.
+@SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(SensorDataService.class)
+@Transactional
 class SensorDataServiceTest {
 
-    @Autowired
-    SensorDataService service;
-    @Autowired
-    SensorRepository sensorRepository;
-    @Autowired
-    SensorReadingRepository readingRepository;
+    @Autowired SensorDataService service;
+    @Autowired SensorRepository sensorRepository;
+    @Autowired SensorReadingRepository readingRepository;
 
     // Builds a valid request; tests vary only the ids they care about.
     private SensorDataRequest reading(String readingId, String sensorId) {
@@ -57,7 +49,7 @@ class SensorDataServiceTest {
         assertThat(readingRepository.count()).isEqualTo(3);
     }
 
-    // Fewer than 3 measurements are still stored (storage happens regardless of count).
+    // Fewer than 3 measurements are still stored.
     @Test
     void ingest_fewerThanThreeStillStored() {
         service.ingest(List.of(reading("READ-1", "SEN-1")));
