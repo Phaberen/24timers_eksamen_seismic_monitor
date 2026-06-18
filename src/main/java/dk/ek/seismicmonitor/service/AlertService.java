@@ -1,5 +1,6 @@
 package dk.ek.seismicmonitor.service;
 
+import dk.ek.seismicmonitor.dto.AlertResponse;
 import dk.ek.seismicmonitor.estimation.EpicenterEstimator;
 import dk.ek.seismicmonitor.estimation.Location;
 import dk.ek.seismicmonitor.estimation.LocationWithDistance;
@@ -37,8 +38,6 @@ public class AlertService {
         this.readingRepository = readingRepository;
     }
 
-    // Creates an alert when exactly three valid readings are present and the
-    // epicenter can be estimated; otherwise returns empty and leaves readings as-is.
     @Transactional
     public Optional<EarthquakeAlert> createAlertIfWarranted(List<SensorReading> validReadings) {
         if (validReadings.size() != REQUIRED_VALID_MEASUREMENTS) {
@@ -63,14 +62,28 @@ public class AlertService {
         return Optional.of(alert);
     }
 
-    // Admin action: move an alert to a new status. Loads the alert (404 if missing)
-    // and delegates the rule check to the entity, which throws on an illegal jump.
     @Transactional
     public EarthquakeAlert changeStatus(Long alertId, AlertStatus target) {
         EarthquakeAlert alert = alertRepository.findById(alertId)
                 .orElseThrow(() -> new AlertNotFoundException(alertId));
         alert.changeStatusTo(target);
-        return alert; // managed entity: the status change is flushed on commit
+        return alert;
+    }
+
+    @Transactional(readOnly = true)
+    public List<AlertResponse> getActiveAlerts() {
+        return alertRepository.findByStatusOrderByCreatedAtDesc(AlertStatus.ACTIVE)
+                .stream()
+                .map(AlertResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<AlertResponse> getAllAlerts() {
+        return alertRepository.findAllByOrderByCreatedAtDesc()
+                .stream()
+                .map(AlertResponse::from)
+                .toList();
     }
 
     private List<LocationWithDistance> toLocationWithDistance(List<SensorReading> readings) {
