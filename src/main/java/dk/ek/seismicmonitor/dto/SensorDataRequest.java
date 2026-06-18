@@ -9,4 +9,13 @@ public record SensorDataRequest(
         Double estimatedDistanceToEpicenterKm,
         Double estimatedMagnitude,
         LocalDateTime recordedAt
-) { }
+) {
+    public boolean isValid() {
+        return sensorLocation != null
+                && sensorLocation.latitude() != null
+                && sensorLocation.longitude() != null
+                && estimatedDistanceToEpicenterKm != null && estimatedDistanceToEpicenterKm > 0
+                && estimatedMagnitude != null && estimatedMagnitude > 0
+                && recordedAt != null;
+    }
+}

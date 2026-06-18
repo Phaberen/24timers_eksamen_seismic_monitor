@@ -10,6 +10,7 @@ import dk.ek.seismicmonitor.repository.SensorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,18 +18,26 @@ public class SensorDataService {
 
     private final SensorRepository sensorRepository;
     private final SensorReadingRepository readingRepository;
+    private final AlertService alertService;
 
     public SensorDataService(SensorRepository sensorRepository,
-                             SensorReadingRepository readingRepository) {
+                             SensorReadingRepository readingRepository,
+                             AlertService alertService) {
         this.sensorRepository = sensorRepository;
         this.readingRepository = readingRepository;
+        this.alertService = alertService;
     }
 
     // Persists every reading in the request (a request carries 1-3 measurements).
     // Readings are always stored, even when no alert can be created (Delopgave 2).
+    // After storing, the valid readings from THIS request are handed to
+    // AlertService, which creates an UNDER_REVIEW alert iff there are exactly three.
     @Transactional
     public void ingest(List<SensorDataRequest> measurements) {
         if (measurements == null) return;
+
+        List<SensorReading> validReadings = new ArrayList<>();
+
         for (SensorDataRequest m : measurements) {
             // Skip resends: readingId is a unique business key.
             if (m.readingId() != null && readingRepository.existsByReadingId(m.readingId())) {
@@ -45,7 +54,14 @@ public class SensorDataService {
                     m.recordedAt()
             );
             readingRepository.save(reading);
+
+            // Only valid readings count toward an alert; invalid ones are still stored.
+            if (m.isValid()) {
+                validReadings.add(reading);
+            }
         }
+
+        alertService.createAlertIfWarranted(validReadings);
     }
 
     @Transactional(readOnly = true)
@@ -62,7 +78,6 @@ public class SensorDataService {
                                 latOf(m.sensorLocation()),
                                 lonOf(m.sensorLocation()))));
     }
-
 
     private SensorReadingResponse toResponse(SensorReading r) {
         return new SensorReadingResponse(

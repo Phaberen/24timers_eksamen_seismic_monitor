@@ -15,11 +15,11 @@ public class SensorReading {
     @Column(nullable = false, unique = true)
     private String readingId;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "sensor_id")
     private Sensor sensor;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "alert_id")
     private EarthquakeAlert alert;
 
