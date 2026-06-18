@@ -29,9 +29,4 @@ public class Sensor {
     public String getSensorId() { return sensorId; }
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
-
-    public void updateLocation(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
 }
