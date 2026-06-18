@@ -7,7 +7,6 @@ import dk.ek.seismicmonitor.estimation.Location;
 import dk.ek.seismicmonitor.estimation.LocationWithDistance;
 import dk.ek.seismicmonitor.estimation.MagnitudeEstimator;
 import dk.ek.seismicmonitor.estimation.MagnitudeSample;
-import dk.ek.seismicmonitor.exception.AlertNotFoundException;
 import dk.ek.seismicmonitor.geocoding.ReverseGeocoder;
 import dk.ek.seismicmonitor.model.AlertStatus;
 import dk.ek.seismicmonitor.model.EarthquakeAlert;
@@ -71,8 +70,7 @@ public class AlertService {
 
     @Transactional
     public EarthquakeAlert changeStatus(Long alertId, AlertStatus target) {
-        EarthquakeAlert alert = alertRepository.findById(alertId)
-                .orElseThrow(() -> new AlertNotFoundException(alertId));
+        EarthquakeAlert alert = alertRepository.getByIdOrThrow(alertId);
         alert.changeStatusTo(target);
         return alert;
     }
@@ -96,8 +94,7 @@ public class AlertService {
     // The sensor readings that produced a given alert.
     @Transactional(readOnly = true)
     public List<SensorReadingResponse> getReadingsForAlert(Long alertId) {
-        EarthquakeAlert alert = alertRepository.findById(alertId)
-                .orElseThrow(() -> new AlertNotFoundException(alertId));
+        EarthquakeAlert alert = alertRepository.getByIdOrThrow(alertId);
         return readingRepository.findByAlertOrderByRecordedAtDesc(alert)
                 .stream()
                 .map(SensorReadingResponse::from)

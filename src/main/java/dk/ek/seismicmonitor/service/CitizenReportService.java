@@ -1,7 +1,6 @@
 package dk.ek.seismicmonitor.service;
 
 import dk.ek.seismicmonitor.dto.CitizenReportResponse;
-import dk.ek.seismicmonitor.exception.AlertNotFoundException;
 import dk.ek.seismicmonitor.exception.DuplicateReportException;
 import dk.ek.seismicmonitor.model.CitizenReport;
 import dk.ek.seismicmonitor.model.EarthquakeAlert;
@@ -26,7 +25,7 @@ public class CitizenReportService {
 
     @Transactional
     public CitizenReportResponse createReport(Long alertId, String reportedBy, int intensity) {
-        EarthquakeAlert alert = loadAlert(alertId);
+        EarthquakeAlert alert = alertRepository.getByIdOrThrow(alertId);
         if (reportRepository.existsByAlertAndReportedBy(alert, reportedBy)) {
             throw new DuplicateReportException(alertId, reportedBy);
         }
@@ -36,19 +35,14 @@ public class CitizenReportService {
 
     @Transactional(readOnly = true)
     public long countReports(Long alertId) {
-        return reportRepository.countByAlert(loadAlert(alertId));
+        return reportRepository.countByAlert(alertRepository.getByIdOrThrow(alertId));
     }
 
     @Transactional(readOnly = true)
     public List<CitizenReportResponse> getReports(Long alertId) {
-        return reportRepository.findByAlertOrderByCreatedAtDesc(loadAlert(alertId))
+        return reportRepository.findByAlertOrderByCreatedAtDesc(alertRepository.getByIdOrThrow(alertId))
                 .stream()
                 .map(CitizenReportResponse::from)
                 .toList();
-    }
-
-    private EarthquakeAlert loadAlert(Long alertId) {
-        return alertRepository.findById(alertId)
-                .orElseThrow(() -> new AlertNotFoundException(alertId));
     }
 }
