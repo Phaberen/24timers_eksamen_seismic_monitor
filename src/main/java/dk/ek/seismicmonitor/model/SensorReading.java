@@ -15,9 +15,13 @@ public class SensorReading {
     @Column(nullable = false, unique = true)
     private String readingId;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "sensor_id")
     private Sensor sensor;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "alert_id")
+    private EarthquakeAlert alert;
 
     // Sensor location at the time of the reading (copied from the payload).
     private double latitude;
@@ -43,13 +47,17 @@ public class SensorReading {
         this.recordedAt = recordedAt;
     }
 
+    public void assignToAlert(EarthquakeAlert alert) {
+        this.alert = alert;
+    }
+
     public Long getId() { return id; }
     public String getReadingId() { return readingId; }
     public Sensor getSensor() { return sensor; }
+    public EarthquakeAlert getAlert() { return alert; }
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
-    public double getEstimatedDistanceToEpicenterKm() { return estimatedDistanceToEpicenterKm;
-    }
+    public double getEstimatedDistanceToEpicenterKm() { return estimatedDistanceToEpicenterKm;}
     public double getEstimatedMagnitude() { return estimatedMagnitude; }
     public LocalDateTime getRecordedAt() { return recordedAt; }
 }
