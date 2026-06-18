@@ -4,11 +4,9 @@ import dk.ek.seismicmonitor.dto.AlertResponse;
 import dk.ek.seismicmonitor.dto.ChangeAlertStatusRequest;
 import dk.ek.seismicmonitor.service.AlertService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/alerts")
@@ -18,6 +16,18 @@ public class AlertController {
 
     public AlertController(AlertService alertService) {
         this.alertService = alertService;
+    }
+
+    // "Show all alerts" (admin list). GET /api/alerts
+    @GetMapping
+    public List<AlertResponse> getAllAlerts() {
+        return alertService.getAllAlerts();
+    }
+
+    // "Show active alerts" (citizen list). GET /api/alerts/active
+    @GetMapping("/active")
+    public List<AlertResponse> getActiveAlerts() {
+        return alertService.getActiveAlerts();
     }
 
     // Admin action: change an alert's status. The service + entity enforce the
