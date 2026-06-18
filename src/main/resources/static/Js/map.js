@@ -8,8 +8,9 @@ let markerLayer = null;
 export function initMap() {
     if (map) return;
     map = L.map("map").setView([20, 0], 2);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors",
+    // Dark basemap to match the console theme.
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors © CARTO",
         maxZoom: 19
     }).addTo(map);
     markerLayer = L.layerGroup().addTo(map);
