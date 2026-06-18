@@ -1,5 +1,6 @@
 import { api, setAuth } from "./api.js";
 import { buildCard, renderReadings, renderReports } from "./render.js";
+import { initMap, showAlerts } from "./map.js";
 
 const alertsEl = document.getElementById("alerts");
 const messageEl = document.getElementById("status-message");
@@ -24,6 +25,13 @@ const handlers = {
 
 loginEl.addEventListener("click", login);
 logoutEl.addEventListener("click", logout);
+
+// Allow Enter to submit the login from either field.
+for (const field of [usernameEl, passwordEl]) {
+    field.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") login();
+    });
+}
 showAllEl.addEventListener("click", () => switchView(false));
 document.getElementById("show-active").addEventListener("click", () => switchView(true));
 document.getElementById("refresh").addEventListener("click", loadAlerts);
@@ -69,6 +77,8 @@ function onLoggedIn() {
     logoutEl.hidden = false;
     appEl.hidden = false;
 
+    initMap(); // container is now visible, so Leaflet can size itself
+
     // Only admins may list all alerts; users are limited to the active view.
     showAllEl.hidden = !currentUser.admin;
     switchView(!currentUser.admin);
@@ -97,6 +107,7 @@ async function loadAlerts() {
     messageEl.textContent = "";
     try {
         const alerts = await api(showActiveOnly ? "/api/alerts/active" : "/api/alerts");
+        showAlerts(alerts);
         alertsEl.innerHTML = "";
         if (alerts.length === 0) {
             alertsEl.innerHTML = `<p class="empty">No alerts to show.</p>`;

@@ -15,6 +15,9 @@ public class NominatimReverseGeocoder implements ReverseGeocoder {
 
     private static final String BASE_URL = "https://nominatim.openstreetmap.org";
 
+    // Matches the area column length; Nominatim's display_name can be longer.
+    private static final int MAX_AREA_LENGTH = 255;
+
     private final RestClient restClient;
 
     public NominatimReverseGeocoder() {
@@ -36,11 +39,18 @@ public class NominatimReverseGeocoder implements ReverseGeocoder {
                             .build())
                     .retrieve()
                     .body(NominatimResponse.class);
-            return Optional.ofNullable(response).map(NominatimResponse::toArea);
+            return Optional.ofNullable(response)
+                    .map(NominatimResponse::toArea)
+                    .map(NominatimReverseGeocoder::capLength);
         } catch (Exception lookupFailed) {
             // Best-effort: a geocoding failure must never block alert creation.
             return Optional.empty();
         }
+    }
+
+    // Guards against a display_name longer than the area column (MySQL would reject it).
+    private static String capLength(String area) {
+        return area.length() > MAX_AREA_LENGTH ? area.substring(0, MAX_AREA_LENGTH) : area;
     }
 
     // The slice of Nominatim's JSON we care about; unknown fields are ignored.
