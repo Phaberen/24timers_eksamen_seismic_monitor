@@ -5,6 +5,7 @@ import dk.ek.seismicmonitor.dto.CreateCitizenReportRequest;
 import dk.ek.seismicmonitor.service.CitizenReportService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +20,14 @@ public class CitizenReportController {
         this.reportService = reportService;
     }
 
+    // The reporter is the authenticated user, not a body field, so one user can
+    // only ever file one report per alert.
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CitizenReportResponse create(@PathVariable Long alertId,
-                                        @Valid @RequestBody CreateCitizenReportRequest request) {
-        return reportService.createReport(alertId, request.intensity());
+                                        @Valid @RequestBody CreateCitizenReportRequest request,
+                                        Authentication authentication) {
+        return reportService.createReport(alertId, authentication.getName(), request.intensity());
     }
 
     @GetMapping("/count")

@@ -22,4 +22,10 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleAlertNotFound(AlertNotFoundException ex) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
     }
+
+    // Second report by the same user for one alert -> 409 Conflict.
+    @ExceptionHandler(DuplicateReportException.class)
+    public ProblemDetail handleDuplicateReport(DuplicateReportException ex) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
 }

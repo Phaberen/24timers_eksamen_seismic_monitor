@@ -3,6 +3,7 @@ package dk.ek.seismicmonitor.service;
 import dk.ek.seismicmonitor.dto.SensorDataRequest;
 import dk.ek.seismicmonitor.dto.SensorLocationDto;
 import dk.ek.seismicmonitor.exception.AlertNotFoundException;
+import dk.ek.seismicmonitor.exception.DuplicateReportException;
 import dk.ek.seismicmonitor.repository.EarthquakeAlertRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ class CitizenReportTest {
     void createReport_isCountedAndListed() {
         Long alertId = createAlert();
 
-        reportService.createReport(alertId, 5);
+        reportService.createReport(alertId, "user", 5);
 
         assertThat(reportService.countReports(alertId)).isEqualTo(1);
         assertThat(reportService.getReports(alertId))
@@ -58,10 +59,20 @@ class CitizenReportTest {
                 .satisfies(r -> assertThat(r.intensity()).isEqualTo(5));
     }
 
+    // A user may file only one report per alert.
+    @Test
+    void createReport_sameUserTwice_isRejected() {
+        Long alertId = createAlert();
+        reportService.createReport(alertId, "user", 5);
+
+        assertThatThrownBy(() -> reportService.createReport(alertId, "user", 7))
+                .isInstanceOf(DuplicateReportException.class);
+    }
+
     // Reporting on an alert that does not exist is rejected.
     @Test
     void createReport_unknownAlert_isRejected() {
-        assertThatThrownBy(() -> reportService.createReport(999L, 5))
+        assertThatThrownBy(() -> reportService.createReport(999L, "user", 5))
                 .isInstanceOf(AlertNotFoundException.class);
     }
 }

@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface CitizenReportRepository extends JpaRepository<CitizenReport, Long> {
 
+    boolean existsByAlertAndReportedBy(EarthquakeAlert alert, String reportedBy);
+
     long countByAlert(EarthquakeAlert alert);
 
     List<CitizenReport> findByAlertOrderByCreatedAtDesc(EarthquakeAlert alert);

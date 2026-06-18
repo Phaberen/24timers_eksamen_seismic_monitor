@@ -2,6 +2,7 @@ package dk.ek.seismicmonitor.service;
 
 import dk.ek.seismicmonitor.dto.CitizenReportResponse;
 import dk.ek.seismicmonitor.exception.AlertNotFoundException;
+import dk.ek.seismicmonitor.exception.DuplicateReportException;
 import dk.ek.seismicmonitor.model.CitizenReport;
 import dk.ek.seismicmonitor.model.EarthquakeAlert;
 import dk.ek.seismicmonitor.repository.CitizenReportRepository;
@@ -24,9 +25,12 @@ public class CitizenReportService {
     }
 
     @Transactional
-    public CitizenReportResponse createReport(Long alertId, int intensity) {
+    public CitizenReportResponse createReport(Long alertId, String reportedBy, int intensity) {
         EarthquakeAlert alert = loadAlert(alertId);
-        CitizenReport report = reportRepository.save(new CitizenReport(alert, intensity));
+        if (reportRepository.existsByAlertAndReportedBy(alert, reportedBy)) {
+            throw new DuplicateReportException(alertId, reportedBy);
+        }
+        CitizenReport report = reportRepository.save(new CitizenReport(alert, reportedBy, intensity));
         return CitizenReportResponse.from(report);
     }
 

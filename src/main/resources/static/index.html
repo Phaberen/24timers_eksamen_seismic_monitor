@@ -8,21 +8,32 @@
 </head>
 <body>
     <header>
-        <h1>SeismicMonitor</h1>/
+        <h1>SeismicMonitor</h1>
         <p>Earthquake alerts and citizen reports</p>
     </header>
 
     <main>
-        <div class="toolbar">
-            <button id="show-all" class="tab active">All alerts</button>
-            <button id="show-active" class="tab">Active alerts</button>
-            <button id="refresh">Refresh</button>
+        <div class="auth-bar">
+            <input id="username" placeholder="username" autocomplete="username">
+            <input id="password" type="password" placeholder="password" autocomplete="current-password">
+            <button id="login">Log in</button>
+            <span id="who" class="who"></span>
+            <button id="logout" hidden>Log out</button>
         </div>
 
         <p id="status-message" class="status-message"></p>
-        <section id="alerts"></section>
+
+        <div id="app" hidden>
+            <div class="toolbar">
+                <button id="show-all" class="tab active">All alerts</button>
+                <button id="show-active" class="tab">Active alerts</button>
+                <button id="refresh">Refresh</button>
+            </div>
+
+            <section id="alerts"></section>
+        </div>
     </main>
 
-    <script src="app.js"></script>
+    <script type="module" src="Js/app.js"></script>
 </body>
 </html>

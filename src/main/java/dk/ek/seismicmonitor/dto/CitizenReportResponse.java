@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record CitizenReportResponse(
         Long id,
         Long alertId,
+        String reportedBy,
         int intensity,
         LocalDateTime createdAt
 ) {
@@ -14,6 +15,7 @@ public record CitizenReportResponse(
         return new CitizenReportResponse(
                 report.getId(),
                 report.getAlert().getId(),
+                report.getReportedBy(),
                 report.getIntensity(),
                 report.getCreatedAt());
     }
