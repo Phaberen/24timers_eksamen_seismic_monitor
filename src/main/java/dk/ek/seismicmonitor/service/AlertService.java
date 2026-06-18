@@ -5,6 +5,8 @@ import dk.ek.seismicmonitor.estimation.Location;
 import dk.ek.seismicmonitor.estimation.LocationWithDistance;
 import dk.ek.seismicmonitor.estimation.MagnitudeEstimator;
 import dk.ek.seismicmonitor.estimation.MagnitudeSample;
+import dk.ek.seismicmonitor.exception.AlertNotFoundException;
+import dk.ek.seismicmonitor.model.AlertStatus;
 import dk.ek.seismicmonitor.model.EarthquakeAlert;
 import dk.ek.seismicmonitor.model.SensorReading;
 import dk.ek.seismicmonitor.repository.EarthquakeAlertRepository;
@@ -59,6 +61,16 @@ public class AlertService {
         readingRepository.saveAll(validReadings);
 
         return Optional.of(alert);
+    }
+
+    // Admin action: move an alert to a new status. Loads the alert (404 if missing)
+    // and delegates the rule check to the entity, which throws on an illegal jump.
+    @Transactional
+    public EarthquakeAlert changeStatus(Long alertId, AlertStatus target) {
+        EarthquakeAlert alert = alertRepository.findById(alertId)
+                .orElseThrow(() -> new AlertNotFoundException(alertId));
+        alert.changeStatusTo(target);
+        return alert; // managed entity: the status change is flushed on commit
     }
 
     private List<LocationWithDistance> toLocationWithDistance(List<SensorReading> readings) {

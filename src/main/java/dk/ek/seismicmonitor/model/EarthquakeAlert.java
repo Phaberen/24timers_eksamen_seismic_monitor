@@ -1,5 +1,6 @@
 package dk.ek.seismicmonitor.model;
 
+import dk.ek.seismicmonitor.exception.IllegalAlertTransitionException;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -31,6 +32,15 @@ public class EarthquakeAlert {
         this.epicenterLongitude = epicenterLongitude;
         this.magnitude = magnitude;
         this.createdAt = LocalDateTime.now();
+    }
+
+    // Moves the alert to a new status, enforcing the state machine in one place.
+    // Rejects any transition AlertStatus.canTransitionTo does not allow.
+    public void changeStatusTo(AlertStatus target) {
+        if (!status.canTransitionTo(target)) {
+            throw new IllegalAlertTransitionException(status, target);
+        }
+        this.status = target;
     }
 
     public Long getId() { return id; }
