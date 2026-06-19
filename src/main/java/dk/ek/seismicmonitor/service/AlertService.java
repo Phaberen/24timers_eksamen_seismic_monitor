@@ -91,7 +91,6 @@ public class AlertService {
                 .toList();
     }
 
-    // The sensor readings that produced a given alert.
     @Transactional(readOnly = true)
     public List<SensorReadingResponse> getReadingsForAlert(Long alertId) {
         EarthquakeAlert alert = alertRepository.getByIdOrThrow(alertId);

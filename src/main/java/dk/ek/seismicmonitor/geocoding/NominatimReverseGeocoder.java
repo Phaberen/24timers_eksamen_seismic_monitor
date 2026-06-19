@@ -7,21 +7,17 @@ import org.springframework.web.client.RestClient;
 
 import java.util.Optional;
 
-// Resolves an area via OpenStreetMap's Nominatim reverse-geocoding API.
-// Disabled under the "test" profile so unit tests make no network calls.
 @Component
 @Profile("!test")
 public class NominatimReverseGeocoder implements ReverseGeocoder {
 
     private static final String BASE_URL = "https://nominatim.openstreetmap.org";
 
-    // Matches the area column length; Nominatim's display_name can be longer.
     private static final int MAX_AREA_LENGTH = 255;
 
     private final RestClient restClient;
 
     public NominatimReverseGeocoder() {
-        // Nominatim's usage policy requires a descriptive User-Agent.
         this.restClient = RestClient.builder()
                 .baseUrl(BASE_URL)
                 .defaultHeader("User-Agent", "SeismicMonitor/1.0 (exam project)")
@@ -43,17 +39,14 @@ public class NominatimReverseGeocoder implements ReverseGeocoder {
                     .map(NominatimResponse::toArea)
                     .map(NominatimReverseGeocoder::capLength);
         } catch (Exception lookupFailed) {
-            // Best-effort: a geocoding failure must never block alert creation.
             return Optional.empty();
         }
     }
 
-    // Guards against a display_name longer than the area column (MySQL would reject it).
     private static String capLength(String area) {
         return area.length() > MAX_AREA_LENGTH ? area.substring(0, MAX_AREA_LENGTH) : area;
     }
 
-    // The slice of Nominatim's JSON we care about; unknown fields are ignored.
     private record NominatimResponse(
             @JsonProperty("display_name") String displayName,
             Address address) {
@@ -67,7 +60,6 @@ public class NominatimReverseGeocoder implements ReverseGeocoder {
     }
 
     private record Address(String city, String town, String village, String state, String country) {
-        // Most specific available area, falling back to broader ones.
         String bestArea() {
             if (city != null) return city;
             if (town != null) return town;

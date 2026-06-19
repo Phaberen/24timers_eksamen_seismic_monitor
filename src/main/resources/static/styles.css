@@ -28,7 +28,6 @@ body {
     font-family: var(--sans);
     color: var(--text);
     background-color: var(--bg);
-    /* Atmospheric glow + faint instrument grid. */
     background-image:
         radial-gradient(900px 480px at 82% -12%, rgba(53, 214, 195, 0.10), transparent 60%),
         linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
@@ -61,7 +60,6 @@ header p {
     letter-spacing: 0.02em;
 }
 
-/* Live "monitoring" indicator. */
 .pulse-dot {
     width: 9px;
     height: 9px;
@@ -165,7 +163,6 @@ button:hover { border-color: var(--accent); color: var(--accent); }
     to   { opacity: 1; transform: none; }
 }
 
-/* Staggered reveal for the first few cards. */
 .alert-card:nth-child(1) { animation-delay: 0.03s; }
 .alert-card:nth-child(2) { animation-delay: 0.08s; }
 .alert-card:nth-child(3) { animation-delay: 0.13s; }
@@ -173,7 +170,6 @@ button:hover { border-color: var(--accent); color: var(--accent); }
 .alert-card:nth-child(5) { animation-delay: 0.23s; }
 .alert-card:nth-child(6) { animation-delay: 0.28s; }
 
-/* Status-driven left edge, derived purely from the badge inside. */
 .alert-card:has(.badge.UNDER_REVIEW) { --edge: var(--under); }
 .alert-card:has(.badge.ACTIVE)       { --edge: var(--active); }
 .alert-card:has(.badge.FALSE_ALARM)  { --edge: var(--false); }
@@ -191,7 +187,6 @@ button:hover { border-color: var(--accent); color: var(--accent); }
     padding: 0.25rem 0.6rem;
     border-radius: 999px;
     white-space: nowrap;
-    /* Text, fill and border all derived from one per-status hue (--c). */
     color: var(--c, var(--dim));
     background: color-mix(in srgb, var(--c, var(--dim)) 15%, transparent);
     border: 1px solid color-mix(in srgb, var(--c, var(--dim)) 35%, transparent);

@@ -1,14 +1,9 @@
-// Leaflet map of alert epicenters. Leaflet is loaded globally (as `L`) from a CDN
-// <script> in index.html, so this module just uses the global.
-
 let map = null;
 let markerLayer = null;
 
-// Builds the map once. Must run after its container is visible and sized.
 export function initMap() {
     if (map) return;
     map = L.map("map").setView([20, 0], 2);
-    // Dark basemap to match the console theme.
     L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap contributors © CARTO",
         maxZoom: 19
@@ -16,10 +11,9 @@ export function initMap() {
     markerLayer = L.layerGroup().addTo(map);
 }
 
-// Replaces all markers with one per alert and fits the view to them.
 export function showAlerts(alerts) {
     if (!map) return;
-    map.invalidateSize(); // container may have just become visible
+    map.invalidateSize();
     markerLayer.clearLayers();
 
     const points = [];

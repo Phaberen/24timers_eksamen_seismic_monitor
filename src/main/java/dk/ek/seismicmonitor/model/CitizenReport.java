@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(
         name = "citizen_report",
-        // One report per user per alert, enforced in the database.
         uniqueConstraints = @UniqueConstraint(
                 name = "uk_report_per_user_per_alert",
                 columnNames = {"alert_id", "reported_by"})
@@ -21,17 +20,15 @@ public class CitizenReport {
     @JoinColumn(name = "alert_id")
     private EarthquakeAlert alert;
 
-    // Username of the authenticated reporter. Part of the unique (alert, user) key.
     @Column(name = "reported_by", nullable = false)
     private String reportedBy;
 
-    // Felt strength on a 1–10 scale.
     @Column(nullable = false)
     private int intensity;
 
     private LocalDateTime createdAt;
 
-    protected CitizenReport() { } // required by JPA
+    protected CitizenReport() { }
 
     public CitizenReport(EarthquakeAlert alert, String reportedBy, int intensity) {
         this.alert = alert;

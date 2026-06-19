@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-// Pure logic test of the alert state machine (no Spring context needed).
 class AlertStatusTransitionTest {
 
     private EarthquakeAlert newAlert() {
-        return new EarthquakeAlert(55.0, 12.0, 4.0, "Copenhagen"); // starts UNDER_REVIEW
+        return new EarthquakeAlert(55.0, 12.0, 4.0, "Copenhagen");
     }
 
     @Test
@@ -37,7 +36,7 @@ class AlertStatusTransitionTest {
 
     @Test
     void illegalJump_isRejected() {
-        EarthquakeAlert alert = newAlert(); // UNDER_REVIEW -> NOT_ACTIVE is not allowed
+        EarthquakeAlert alert = newAlert();
         assertThatThrownBy(() -> alert.changeStatusTo(AlertStatus.NOT_ACTIVE))
                 .isInstanceOf(IllegalAlertTransitionException.class);
     }
@@ -45,7 +44,7 @@ class AlertStatusTransitionTest {
     @Test
     void terminalState_cannotChange() {
         EarthquakeAlert alert = newAlert();
-        alert.changeStatusTo(AlertStatus.FALSE_ALARM); // terminal
+        alert.changeStatusTo(AlertStatus.FALSE_ALARM);
         assertThatThrownBy(() -> alert.changeStatusTo(AlertStatus.ACTIVE))
                 .isInstanceOf(IllegalAlertTransitionException.class);
     }

@@ -16,8 +16,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// Full app context (boots fine) backed by H2 from the "test" profile.
-// @Transactional rolls each test back so tests stay isolated.
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
@@ -27,7 +25,6 @@ class SensorDataServiceTest {
     @Autowired SensorRepository sensorRepository;
     @Autowired SensorReadingRepository readingRepository;
 
-    // Builds a valid request; tests vary only the ids they care about.
     private SensorDataRequest reading(String readingId, String sensorId) {
         return new SensorDataRequest(
                 readingId,
@@ -38,7 +35,6 @@ class SensorDataServiceTest {
                 LocalDateTime.parse("2026-05-20T10:15:30"));
     }
 
-    // A full 3-measurement request stores all three readings.
     @Test
     void ingest_persistsAllReadingsInRequest() {
         service.ingest(List.of(
@@ -49,7 +45,6 @@ class SensorDataServiceTest {
         assertThat(readingRepository.count()).isEqualTo(3);
     }
 
-    // Fewer than 3 measurements are still stored.
     @Test
     void ingest_fewerThanThreeStillStored() {
         service.ingest(List.of(reading("READ-1", "SEN-1")));
@@ -57,7 +52,6 @@ class SensorDataServiceTest {
         assertThat(readingRepository.count()).isEqualTo(1);
     }
 
-    // Two readings from the same sensor reuse one Sensor row (find-or-create).
     @Test
     void ingest_reusesSensorForSameSensorId() {
         service.ingest(List.of(
@@ -68,7 +62,6 @@ class SensorDataServiceTest {
         assertThat(readingRepository.count()).isEqualTo(2);
     }
 
-    // A resent readingId is skipped (idempotency; protects the unique constraint).
     @Test
     void ingest_skipsDuplicateReadingId() {
         service.ingest(List.of(reading("READ-1", "SEN-1")));
@@ -77,7 +70,6 @@ class SensorDataServiceTest {
         assertThat(readingRepository.count()).isEqualTo(1);
     }
 
-    // getAllReadings() returns a flat DTO with sensorId pulled through the relationship.
     @Test
     void getAllReadings_returnsStoredReadingsAsDto() {
         service.ingest(List.of(reading("READ-1", "SEN-1")));

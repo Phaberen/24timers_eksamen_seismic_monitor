@@ -1,7 +1,3 @@
-// Pure rendering: turns alert/report/reading data into DOM. No network calls and
-// no app state; user actions are delegated through the passed-in handlers.
-
-// Which status transitions an admin may trigger from the current status.
 const NEXT_STATUSES = {
     UNDER_REVIEW: [["ACTIVE", "Mark active"], ["FALSE_ALARM", "False alarm"]],
     ACTIVE: [["NOT_ACTIVE", "Mark not active"]],
@@ -37,7 +33,6 @@ function buildActions(alert, handlers, isAdmin) {
     const actions = document.createElement("div");
     actions.className = "actions";
 
-    // Admin-only: change status and inspect the alert's reports/readings.
     if (isAdmin) {
         for (const [target, label] of NEXT_STATUSES[alert.status]) {
             actions.appendChild(makeButton(label, () => handlers.changeStatus(alert.id, target)));
@@ -46,7 +41,6 @@ function buildActions(alert, handlers, isAdmin) {
         actions.appendChild(makeButton("Reports", () => handlers.showReports(alert.id)));
     }
 
-    // Citizen report form: intensity 1-10 + submit.
     const form = document.createElement("span");
     form.className = "report-form";
     const intensity = document.createElement("input");

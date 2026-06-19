@@ -5,8 +5,6 @@ import dk.ek.seismicmonitor.model.EarthquakeAlert;
 
 import java.time.LocalDateTime;
 
-// Read model for an earthquake alert. Keeps the JPA entity out of the API so the
-// JSON shape is decoupled from the database mapping.
 public record AlertResponse(
         Long id,
         AlertStatus status,
@@ -16,8 +14,6 @@ public record AlertResponse(
         String area,
         LocalDateTime createdAt
 ) {
-    // Maps an entity to its response shape in one place, so every endpoint that
-    // returns an alert produces identical JSON.
     public static AlertResponse from(EarthquakeAlert alert) {
         return new AlertResponse(
                 alert.getId(),

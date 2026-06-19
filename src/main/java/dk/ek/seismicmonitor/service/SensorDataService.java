@@ -28,10 +28,6 @@ public class SensorDataService {
         this.alertService = alertService;
     }
 
-    // Persists every reading in the request (a request carries 1-3 measurements).
-    // Readings are always stored, even when no alert can be created (Delopgave 2).
-    // After storing, the valid readings from THIS request are handed to
-    // AlertService, which creates an UNDER_REVIEW alert iff there are exactly three.
     @Transactional
     public void ingest(List<SensorDataRequest> measurements) {
         if (measurements == null) return;
@@ -39,7 +35,6 @@ public class SensorDataService {
         List<SensorReading> validReadings = new ArrayList<>();
 
         for (SensorDataRequest m : measurements) {
-            // Skip resends: readingId is a unique business key.
             if (m.readingId() != null && readingRepository.existsByReadingId(m.readingId())) {
                 continue;
             }
@@ -55,7 +50,6 @@ public class SensorDataService {
             );
             readingRepository.save(reading);
 
-            // Only valid readings count toward an alert; invalid ones are still stored.
             if (m.isValid()) {
                 validReadings.add(reading);
             }

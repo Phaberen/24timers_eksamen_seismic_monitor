@@ -18,7 +18,7 @@ public class TrilaterationEpicenterEstimator implements EpicenterEstimator {
         double refLatRad = Math.toRadians(ref.latitude());
         double refLonRad = Math.toRadians(ref.longitude());
 
-        double earthRadius = 6371.00; // KM
+        double earthRadius = 6371.00;
 
         double[] x = new double[3];
         double[] y = new double[3];
@@ -32,7 +32,7 @@ public class TrilaterationEpicenterEstimator implements EpicenterEstimator {
 
             x[i] = earthRadius * (lonRad - refLonRad) * Math.cos(refLatRad);
             y[i] = earthRadius * (latRad - refLatRad);
-            d[i] = measurements.get(i).distance(); // km
+            d[i] = measurements.get(i).distance();
         }
 
         double A = 2 * (x[1] - x[0]);

@@ -11,7 +11,6 @@ public class SensorReading {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Business identifier from the payload, e.g. "READ-001".
     @Column(nullable = false, unique = true)
     private String readingId;
 
@@ -23,7 +22,6 @@ public class SensorReading {
     @JoinColumn(name = "alert_id")
     private EarthquakeAlert alert;
 
-    // Sensor location at the time of the reading (copied from the payload).
     private double latitude;
     private double longitude;
 
@@ -31,7 +29,7 @@ public class SensorReading {
     private double estimatedMagnitude;
     private LocalDateTime recordedAt;
 
-    protected SensorReading() { } // required by JPA
+    protected SensorReading() { }
 
     public SensorReading(String readingId, Sensor sensor,
                          double latitude, double longitude,

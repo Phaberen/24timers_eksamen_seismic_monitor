@@ -10,14 +10,13 @@ public class Sensor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Business identifier from the payload, e.g. "SEN-001".
     @Column(nullable = false, unique = true)
     private String sensorId;
 
     private double latitude;
     private double longitude;
 
-    protected Sensor() { } // required by JPA
+    protected Sensor() { }
 
     public Sensor(String sensorId, double latitude, double longitude) {
         this.sensorId = sensorId;

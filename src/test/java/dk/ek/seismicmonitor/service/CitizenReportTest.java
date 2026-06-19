@@ -37,7 +37,6 @@ class CitizenReportTest {
                 LocalDateTime.parse("2026-05-20T10:15:30"));
     }
 
-    // Ingests three valid readings to create an alert and returns its id.
     private Long createAlert() {
         sensorDataService.ingest(List.of(
                 reading("READ-1", "SEN-1", 55.6, 12.5, 3.0),
@@ -46,7 +45,6 @@ class CitizenReportTest {
         return alertRepository.findAll().getFirst().getId();
     }
 
-    // A report is stored and reflected in both the count and the list.
     @Test
     void createReport_isCountedAndListed() {
         Long alertId = createAlert();
@@ -59,7 +57,6 @@ class CitizenReportTest {
                 .satisfies(r -> assertThat(r.intensity()).isEqualTo(5));
     }
 
-    // A user may file only one report per alert.
     @Test
     void createReport_sameUserTwice_isRejected() {
         Long alertId = createAlert();
@@ -69,7 +66,6 @@ class CitizenReportTest {
                 .isInstanceOf(DuplicateReportException.class);
     }
 
-    // Reporting on an alert that does not exist is rejected.
     @Test
     void createReport_unknownAlert_isRejected() {
         assertThatThrownBy(() -> reportService.createReport(999L, "user", 5))

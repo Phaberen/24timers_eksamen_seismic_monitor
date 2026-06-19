@@ -12,7 +12,6 @@ public class EarthquakeAlert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Stored as the enum name (e.g. "UNDER_REVIEW") rather than an ordinal int.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AlertStatus status;
@@ -21,14 +20,12 @@ public class EarthquakeAlert {
     private double epicenterLongitude;
     private double magnitude;
 
-    // Reverse-geocoded area for the epicenter (city/region/country); null if unknown.
     private String area;
 
     private LocalDateTime createdAt;
 
-    protected EarthquakeAlert() { } // required by JPA
+    protected EarthquakeAlert() { }
 
-    // New alerts always start UNDER_REVIEW.
     public EarthquakeAlert(double epicenterLatitude, double epicenterLongitude,
                            double magnitude, String area) {
         this.status = AlertStatus.UNDER_REVIEW;
@@ -39,8 +36,6 @@ public class EarthquakeAlert {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Moves the alert to a new status, enforcing the state machine in one place.
-    // Rejects any transition AlertStatus.canTransitionTo does not allow.
     public void changeStatusTo(AlertStatus target) {
         if (!status.canTransitionTo(target)) {
             throw new IllegalAlertTransitionException(status, target);

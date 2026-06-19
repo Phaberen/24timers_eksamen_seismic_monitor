@@ -13,7 +13,6 @@ public interface EarthquakeAlertRepository extends JpaRepository<EarthquakeAlert
 
     List<EarthquakeAlert> findAllByOrderByCreatedAtDesc();
 
-    // One home for the "load by id or 404" rule shared by the services.
     default EarthquakeAlert getByIdOrThrow(Long id) {
         return findById(id).orElseThrow(() -> new AlertNotFoundException(id));
     }

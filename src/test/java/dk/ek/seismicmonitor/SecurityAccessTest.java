@@ -13,8 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Verifies the Delopgave 5 access rules: sensor ingest stays public, reads require
-// auth, and admin-only endpoints reject a plain USER.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

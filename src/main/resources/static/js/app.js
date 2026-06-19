@@ -13,9 +13,8 @@ const logoutEl = document.getElementById("logout");
 const showAllEl = document.getElementById("show-all");
 
 let showActiveOnly = false;
-let currentUser = null; // { username, admin }
+let currentUser = null;
 
-// Card buttons delegate user actions back here.
 const handlers = {
     changeStatus,
     submitReport,
@@ -26,7 +25,6 @@ const handlers = {
 loginEl.addEventListener("click", login);
 logoutEl.addEventListener("click", logout);
 
-// Allow Enter to submit the login from either field.
 for (const field of [usernameEl, passwordEl]) {
     field.addEventListener("keydown", (event) => {
         if (event.key === "Enter") login();
@@ -39,8 +37,6 @@ document.getElementById("refresh").addEventListener("click", loadAlerts);
 function showError(error) {
     messageEl.textContent = error.message;
 }
-
-// --- Authentication -------------------------------------------------------
 
 async function login() {
     messageEl.textContent = "";
@@ -77,14 +73,11 @@ function onLoggedIn() {
     logoutEl.hidden = false;
     appEl.hidden = false;
 
-    initMap(); // container is now visible, so Leaflet can size itself
+    initMap();
 
-    // Only admins may list all alerts; users are limited to the active view.
     showAllEl.hidden = !currentUser.admin;
     switchView(!currentUser.admin);
 }
-
-// --- Alerts ---------------------------------------------------------------
 
 function switchView(activeOnly) {
     showActiveOnly = activeOnly;
@@ -97,7 +90,6 @@ function findCard(alertId) {
     return alertsEl.querySelector(`.alert-card[data-alert-id="${alertId}"]`);
 }
 
-// Fetches the report count for an alert and builds its card.
 async function cardFor(alert) {
     const reportCount = await api(`/api/alerts/${alert.id}/reports/count`);
     return buildCard(alert, reportCount, handlers, currentUser.admin);
@@ -121,8 +113,6 @@ async function loadAlerts() {
     }
 }
 
-// Replaces a single card in place (keeps scroll position), or removes it when a
-// status change drops it out of the currently filtered list.
 async function replaceCard(alertId, updatedAlert) {
     const oldCard = findCard(alertId);
     if (!oldCard) return;
@@ -169,8 +159,6 @@ async function submitReport(alertId, value) {
     }
 }
 
-// Updates the report count (and the reports panel if it is open) without
-// rebuilding the whole list.
 async function refreshReports(alertId) {
     const card = findCard(alertId);
     if (!card) return;
@@ -184,7 +172,6 @@ async function refreshReports(alertId) {
     }
 }
 
-// Opens the detail panel under an alert with freshly fetched data.
 async function togglePanel(alertId, path, renderer) {
     messageEl.textContent = "";
     const panel = findCard(alertId).querySelector(".panel");
