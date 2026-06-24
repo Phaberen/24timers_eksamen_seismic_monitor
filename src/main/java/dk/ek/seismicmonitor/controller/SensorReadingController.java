@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// CONTROLLER LAYER — admin-only view of all raw readings (access is enforced in SecurityConfig).
 @RestController
 @RequestMapping("/api/readings")
 public class SensorReadingController {
@@ -18,6 +19,7 @@ public class SensorReadingController {
         this.sensorDataService = sensorDataService;
     }
 
+    // Handles GET /api/readings — returns every stored reading as JSON.
     @GetMapping
     public List<SensorReadingResponse> getAllReadings() {
         return sensorDataService.getAllReadings();

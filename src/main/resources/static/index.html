@@ -1,9 +1,11 @@
+<!-- FRONTEND — the single page. It's mostly empty placeholders; the JavaScript fills it in. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SeismicMonitor</title>
+    <!-- Web fonts and the Leaflet map library's stylesheet, loaded from the internet (CDN). -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,6 +22,7 @@
     </header>
 
     <main>
+        <!-- Login bar. app.js reads these inputs and toggles which buttons show. -->
         <div class="auth-bar">
             <input id="username" placeholder="username" autocomplete="username">
             <input id="password" type="password" placeholder="password" autocomplete="current-password">
@@ -28,21 +31,27 @@
             <button id="logout" hidden>Log out</button>
         </div>
 
+        <!-- Where error/status text appears. -->
         <p id="status-message" class="status-message"></p>
 
+        <!-- The main app, hidden until login succeeds. -->
         <div id="app" hidden>
+            <!-- Tabs (all vs active alerts) + refresh. -->
             <div class="toolbar">
                 <button id="show-all" class="tab active">All alerts</button>
                 <button id="show-active" class="tab">Active alerts</button>
                 <button id="refresh">Refresh</button>
             </div>
 
+            <!-- The Leaflet map gets drawn into this box. -->
             <div id="map"></div>
 
+            <!-- The alert cards get added into this section by render.js. -->
             <section id="alerts"></section>
         </div>
     </main>
 
+    <!-- The Leaflet library, then our own app (type="module" lets app.js import the other JS files). -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="js/app.js"></script>
 </body>

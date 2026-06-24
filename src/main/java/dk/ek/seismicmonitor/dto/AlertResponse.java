@@ -5,6 +5,7 @@ import dk.ek.seismicmonitor.model.EarthquakeAlert;
 
 import java.time.LocalDateTime;
 
+// DTO — the outgoing shape of an alert (what the API returns as JSON).
 public record AlertResponse(
         Long id,
         AlertStatus status,
@@ -14,6 +15,7 @@ public record AlertResponse(
         String area,
         LocalDateTime createdAt
 ) {
+    // Mapper: build a response DTO from an alert entity.
     public static AlertResponse from(EarthquakeAlert alert) {
         return new AlertResponse(
                 alert.getId(),
