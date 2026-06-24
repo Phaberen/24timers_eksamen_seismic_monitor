@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 SeismicMonitor — a full-stack Spring Boot REST app built for a 24-hour Programmering 2 exam (Datamatiker, 3. semester). An international org monitors earth tremors: simulated seismic sensors POST raw measurements, the app decides when a group of measurements together indicates an earthquake, creates an alert with an estimated epicenter/magnitude, and exposes alerts + citizen reports through a role-secured REST API and a vanilla-JS frontend.
 
-The assignment, plan, and progress notes live one directory up: `../assignment.txt`, `../PLAN.md`, `../progress.md`. **Read `../PLAN.md` first** — it is the authoritative spec (the 5 delopgaver, business rules, the given epicenter algorithm, exam constraints). Don't re-derive requirements from code.
+The assignment, plan, and progress notes live one directory up: `../assignment.txt`, `../PLAN.md`, `../progress.md`. **Read `../PLAN.md` first** — it is the authoritative spec (the 5 delopgaver, business rules, the given epicenter algorithm, exam constraints). Don't re-derive requirements from code. (Portable snapshot copies of the plan/progress also live in `DOCS/` so the branch is self-contained on any machine — if `../PLAN.md` isn't present, use `DOCS/PLAN.md`.)
+
+**Oral-exam prep context** lives in `DOCS/`: start with `DOCS/ORAL-PREP.md` (the study tracker — examiner's email, per-topic checklist, DB-viewing guide, and a session log whose latest entry says what to do next). `DOCS/ARCHITECTURE.md` is a layer-by-layer tour, and `DOCS/ai-memory/` is a snapshot of the Claude memory (working preferences + study state) for continuing on a different laptop — point a fresh session at `DOCS/ai-memory/MEMORY.md`.
 
 ## Build / run / test
 
