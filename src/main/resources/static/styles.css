@@ -1,3 +1,6 @@
+/* FRONTEND — all the styling for the page. */
+/* :root holds reusable "design tokens" (colours, fonts, sizes) as CSS variables, written var(--name).
+   Defining them once here means a colour can be changed in a single place. */
 :root {
     --bg: #0a0e13;
     --panel: #121a24;
@@ -170,6 +173,8 @@ button:hover { border-color: var(--accent); color: var(--accent); }
 .alert-card:nth-child(5) { animation-delay: 0.23s; }
 .alert-card:nth-child(6) { animation-delay: 0.28s; }
 
+/* Colour the card's left edge based on the status badge inside it. ":has(...)" means
+   "a card that contains this" — so this is done purely in CSS, no JavaScript needed. */
 .alert-card:has(.badge.UNDER_REVIEW) { --edge: var(--under); }
 .alert-card:has(.badge.ACTIVE)       { --edge: var(--active); }
 .alert-card:has(.badge.FALSE_ALARM)  { --edge: var(--false); }
@@ -178,6 +183,9 @@ button:hover { border-color: var(--accent); color: var(--accent); }
 .alert-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
 .alert-head strong { font-family: var(--mono); font-weight: 600; letter-spacing: 0.04em; }
 
+/* The status pill. Each status sets one colour in --c (below); the faded background and border
+   are derived from it with color-mix() (mix the colour with transparent), so we don't hand-pick
+   a separate background/border colour for every status. */
 .badge {
     font-family: var(--mono);
     font-size: 0.68rem;

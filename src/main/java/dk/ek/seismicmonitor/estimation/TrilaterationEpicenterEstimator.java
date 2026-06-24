@@ -4,11 +4,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+// ESTIMATION LAYER — the one real implementation of EpicenterEstimator, using "trilateration".
+// Idea: each reading gives a distance (a circle around the sensor); three circles cross at the
+// quake's centre. The math below was given to us as a black box — we use it as-is, we don't need
+// to re-derive it. @Component makes it a Spring bean so it can be injected into AlertService.
 @Component
 public class TrilaterationEpicenterEstimator implements EpicenterEstimator {
 
     @Override
     public Location estimate(List<LocationWithDistance> measurements) {
+        // Need at least three readings to pin down a point. Fewer -> can't solve it.
         if (measurements.size() < 3) {
             throw new IllegalArgumentException("Der skal være mindst tre målinger.");
         }
@@ -47,6 +52,9 @@ public class TrilaterationEpicenterEstimator implements EpicenterEstimator {
 
         double denominator = A * E - B * D;
 
+        // If this is (nearly) zero the three circles don't give one clear crossing point
+        // (bad geometry), so there's no stable answer -> throw. AlertService catches this and
+        // simply makes no alert, while the readings stay saved.
         if (Math.abs(denominator) < 1e-12) {
             throw new IllegalArgumentException("Målepunkterne giver ingen stabil løsning.");
         }

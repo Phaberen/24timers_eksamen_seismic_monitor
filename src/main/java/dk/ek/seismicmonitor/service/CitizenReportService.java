@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+// SERVICE LAYER — handles citizen reports ("I felt this quake") for a given alert.
 @Service
 public class CitizenReportService {
 
@@ -23,6 +24,8 @@ public class CitizenReportService {
         this.reportRepository = reportRepository;
     }
 
+    // Files a new report. Finds the alert (404 if missing), blocks a second report from the same
+    // user on the same alert (409), then saves and returns it as a DTO.
     @Transactional
     public CitizenReportResponse createReport(Long alertId, String reportedBy, int intensity) {
         EarthquakeAlert alert = alertRepository.getByIdOrThrow(alertId);
@@ -33,11 +36,13 @@ public class CitizenReportService {
         return CitizenReportResponse.from(report);
     }
 
+    // How many reports an alert has (used for the count shown on each alert card).
     @Transactional(readOnly = true)
     public long countReports(Long alertId) {
         return reportRepository.countByAlert(alertRepository.getByIdOrThrow(alertId));
     }
 
+    // The full list of reports for an alert (admin view).
     @Transactional(readOnly = true)
     public List<CitizenReportResponse> getReports(Long alertId) {
         return reportRepository.findByAlertOrderByCreatedAtDesc(alertRepository.getByIdOrThrow(alertId))
